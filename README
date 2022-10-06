@@ -1,0 +1,61 @@
+nvcachetools
+
+Extract and inspect compiled shaders for Nvidia GPUs from the shader cache
+created by Geforce driver software
+
+nvcachedec - Unpack shader objects from Nvidia GPU driver GLCache files
+
+nvucdump - Extract sections from NVuc object file
+
+These tools have been tested with the results of Vulkan and OpenGL programs run
+on FreeBSD, Linux, and Windows systems.
+
+The tools have been tested on outputs of drivers with major version numbers:
+  390, 470, 510.
+
+NVuc microcode files may be directly disassembled with Nvidia's "nvdisasm" tool
+which understands their format.
+
+Sections may also be extracted from NVuc files using nvucdump.  The shader
+microcode section may then be disassembled with "nvdisasm" (--binary option),
+or with "envydis" from the envytools project for a more limited selection of
+GPU architectures.
+
+Example
+
+  env __GL_SHADER_DISK_CACHE_PATH=$PWD/glcache program
+  nvcachedec glcache/GLCache/*/*/*.toc objs
+  nvdisasm objs/object00000.nvuc
+  nvucdump objs/object00000.nvuc sections
+  nvdisasm --binary SM50 sections/section4_0001.bin
+  envydis -i -mgm107 sections/section4_0001.bin
+
+See the sources for details of the usage of each tool.
+
+The tool programs have been created strictly by inspecting the structure of
+data files placed into the user's home directory by Nvidia Geforce software as
+a result of executing free and open programs which utilize the GPU.  No Nvidia
+software has been modified, disassembled, decompiled, reverse engineered,
+subjected to live debugging or otherwise inspected in the creation of any of
+the aforementioned programs.
+
+"Nvidia" and "Geforce" are trademarks of Nvidia Corporation, used without
+permission in the documentation and source text comments of the programs for
+informational purposes only.  The programs are created neither by nor in
+cooperation with Nvidia Corporation or any of its representatives.
+
+
+Copyright 2022 Theron Tarigo
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+

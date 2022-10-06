@@ -1,0 +1,34 @@
+
+TOC File
+
+  Header followed by one or more entries
+
+  Header 0x20 bytes
+    0x00  0x04  Magic - "CDVN"
+    0x04  0x1C  Unknown
+
+  Entry 0x18 bytes
+    0x00  0x10  Copy of 0x10 bytes at offset 0x4 of Section Header
+    0x10  0x04  BIN file offset
+    0x14  0x04  Section size
+
+BIN File
+
+  Header followed by one or more variably sized sections
+
+  A section starts at a (BIN file offset) specified in the TOC File
+
+  Header 0x20 bytes
+    0x00  0x04  Magic - "CDVN"
+    0x04  0x1C  Unknown
+
+  Section
+    0x00  0x24  Header:
+      0x00  0x04  Magic - 0x9846A19D
+      0x04  0x08  Unknown - object dependent - source hash?
+      0x0C  0x08  Unknown - version and object-type dependent
+      0x14  0x08  Unknown - version and object dependent - object hash?
+      0x1C  0x04  Section size - equal to this field in TOC Entry
+      0x20  0x04  Unpacked size
+    0x24  (Section size -4 )  packed section data
+
