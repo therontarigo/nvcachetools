@@ -98,9 +98,9 @@ int main (int argc, char **argv) {
       fprintf(stderr,"Section: Section out of range\n");
       continue;
     }
-    char outpath[PATH_MAX];
-    snprintf(outpath,PATH_MAX,"section%d_%04X.bin",i,typecode);
-    FILE * outfile =fopen(outpath,"w");
+    char outname[60];
+    snprintf(outname,sizeof(outname),"section%d_%04X.bin",i,typecode);
+    FILE * outfile =fopen(outname,"w");
     if (outfile) {
       fwrite(((uint8_t*)obj)+offset,1,length,outfile);
       fclose(outfile);

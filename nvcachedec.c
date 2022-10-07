@@ -182,10 +182,10 @@ int main (int argc, char **argv) {
     }
 #ifdef DBG
     {
-      char outpath[PATH_MAX];
       FILE * outfile;
-      snprintf(outpath,PATH_MAX,"binary%05d",i);
-      outfile=fopen(outpath,"w");
+      char outname[20];
+      snprintf(outname,sizeof(outname),"binary%05d",i);
+      outfile=fopen(outname,"w");
       if (outfile) {
         fwrite(bin+binoffset,1,0x24+packedsize,outfile);
         fclose(outfile);
@@ -212,13 +212,13 @@ int main (int argc, char **argv) {
       continue;
     }
 
-    char outpath[PATH_MAX];
-    char outpathpref[PATH_MAX];
+    char outname[60];
+    char outnamepref[20];
     FILE * outfile;
-    snprintf(outpathpref,PATH_MAX,"object%05d",i);
+    snprintf(outnamepref,sizeof(outnamepref),"object%05d",i);
 
-    snprintf(outpath,PATH_MAX,"header%05d.bin",i);
-    outfile=fopen(outpath,"w");
+    snprintf(outname,sizeof(outname),"header%05d.bin",i);
+    outfile=fopen(outname,"w");
     if (outfile) {
       fwrite(hdr,1,sizeof(hdr),outfile);
       fclose(outfile);
@@ -270,8 +270,8 @@ int main (int argc, char **argv) {
       fprintf(stderr,"\n");
     }
 
-    snprintf(outpath,PATH_MAX,"%s.%s",outpathpref,rawext);
-    outfile=fopen(outpath,"w");
+    snprintf(outname,sizeof(outname),"%s.%s",outnamepref,rawext);
+    outfile=fopen(outname,"w");
     if (outfile) {
       fwrite(packed,1,packedsize,outfile);
       fclose(outfile);
@@ -359,8 +359,8 @@ int main (int argc, char **argv) {
       else fprintf(stderr,"Object: Unknown object type\n");
     }
 
-    snprintf(outpath,PATH_MAX,"%s.%s",outpathpref,objext);
-    outfile=fopen(outpath,"w");
+    snprintf(outname,sizeof(outname),"%s.%s",outnamepref,objext);
+    outfile=fopen(outname,"w");
     if (outfile) {
       fwrite(upk,1,upksize,outfile);
       fclose(outfile);
