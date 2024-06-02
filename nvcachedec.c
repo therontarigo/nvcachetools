@@ -36,7 +36,7 @@ Compiling:
 
   The program will fail if it is compiled for a big-endian CPU architecture!
 
-Copyright 2022 Theron Tarigo
+Copyright 2024 Theron Tarigo
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
@@ -71,7 +71,7 @@ const char * unrle_geterror (ssize_t e);
 struct magic {
   int type;
   union {
-    char b[8];
+    char b[16];
     uint32_t d;
   } match;
   size_t len;
@@ -84,7 +84,8 @@ struct magic {
 #define OBJTYPE_ARB 1
 #define OBJTYPE_NVUC 2
 #define OBJTYPE_NVVM_NVUC 3
-#define OBJTYPE_NVUC_FROMNVVM 4
+#define OBJTYPE_NVDA_NVVM_NVUC 4
+#define OBJTYPE_0x0250_ELF 5
 
 static const struct magic packmagic[]={
   {PACKFMT_RLE,{.b="\x05NVuc"},5},
@@ -96,8 +97,10 @@ static const struct magic packmagic[]={
 static struct magic objmagic[]={
   {OBJTYPE_NVUC,{.b="NVuc"},4},
   {OBJTYPE_NVVM_NVUC,{.b="NVVMNVuc"},8},
+  {OBJTYPE_NVDA_NVVM_NVUC,{.b="NVDANVVMNVuc"},12},
   {OBJTYPE_ARB,{.d=0x0000000A},4},
   {OBJTYPE_ARB,{.d=0x0000000B},4},
+  {OBJTYPE_0x0250_ELF,{.b="\x50\x02\x00\x00\x7F""ELF"},8},
 };
 
 int main (int argc, char **argv) {
@@ -346,10 +349,21 @@ int main (int argc, char **argv) {
     }
     if (objtype==OBJTYPE_NVVM_NVUC&&upksize>=0x4) {
       objext="nvuc";
-      fprintf(stderr,"Object: NVVM-NVuc binary\n");
+      fprintf(stderr,"Object: NVVM NVuc binary\n");
       upk+=0x4;
       upksize-=0x4;
-      objtype=OBJTYPE_NVUC_FROMNVVM;
+    }
+    if (objtype==OBJTYPE_NVDA_NVVM_NVUC&&upksize>=0x8) {
+      objext="nvuc";
+      fprintf(stderr,"Object: NVDA NVVM NVuc binary\n");
+      upk+=0x8;
+      upksize-=0x8;
+    }
+    if (objtype==OBJTYPE_0x0250_ELF) {
+      objext="elf";
+      fprintf(stderr,"Object: 0x0250 ELF object\n");
+      upk+=0x4;
+      upksize-=0x4;
     }
     if (!objtype) {
       objext="bin";
